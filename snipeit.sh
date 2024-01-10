@@ -1,34 +1,4 @@
 #!/bin/bash
-#/ Usage: snipeit.sh [-vh]
-#/
-#/ Install Snipe-IT open source asset management.
-#/
-#/ OPTIONS:
-#/   -v | --verbose    Enable verbose output.
-#/   -h | --help       Show this message.
-
-######################################################
-#           Snipe-It Install Script                  #
-#          Script created by Mike Tucker             #
-#            mtucker6784@gmail.com                   #
-#                                                    #
-# Feel free to modify, but please give               #
-# credit where it's due. Thanks!                     #
-#                                                    #
-#         Updated Snipe-IT Install Script            #
-#          Update created by Aaron Myers             #
-# Change log                                         #
-# * Added support for CentOS/Rocky 9                 #
-# * Fixed CentOS 7 repository for PHP 7.4            #
-# * Removed support for CentOS 6                     #
-# * Removed support for Ubuntu < 18.04               #
-# * Removed support for Ubuntu 21 (EOL)              #
-# * Removed support for Debian < 9 (EOL)             #
-# * Fixed permissions issue with Laravel cache       #
-# * Moved OS check to start of script                #
-# * Fixed timezone awk                               #
-# * Minor display and logging improvements           #
-######################################################
 
 # Parse arguments
 while true; do
@@ -79,10 +49,10 @@ fi
 
 clear
 
-readonly APP_USER="snipeitapp"
-readonly APP_NAME="snipeit"
+readonly APP_USER="assetsecure"
+readonly APP_NAME="assetsecure"
 readonly APP_PATH="/var/www/html/$APP_NAME"
-readonly APP_LOG="/var/log/snipeit-install.log"
+readonly APP_LOG="/var/log/assetsecure.log"
 readonly COMPOSER_PATH="/home/$APP_USER"
 
 progress () {
@@ -103,9 +73,9 @@ progress () {
 
 log () {
   if [ -n "$verbose" ]; then
-    eval "$@" |& tee -a /var/log/snipeit-install.log
+    eval "$@" |& tee -a /var/log/assetsecure-install.log
   else
-    eval "$@" |& tee -a /var/log/snipeit-install.log >/dev/null 2>&1
+    eval "$@" |& tee -a /var/log/assetsecure-install.log >/dev/null 2>&1
   fi
 }
 
@@ -178,10 +148,10 @@ create_virtualhost () {
 }
 
 create_user () {
-  echo "* Creating Snipe-IT user."
+  echo "* Creating assetsecure user."
 
   if [[ "$distro" == "Ubuntu" ]] || [[ "$distro" == "Debian" ]] || [[ "$distro" == "Raspbian" ]] ; then
-    /usr/sbin/adduser --quiet --disabled-password --gecos 'Snipe-IT User' "$APP_USER"
+    /usr/sbin/adduser --quiet --disabled-password --gecos 'assetsecure User' "$APP_USER"
     su -c "/usr/sbin/usermod -a -G "$apache_group" "$APP_USER""
   else
     adduser "$APP_USER"
@@ -228,21 +198,21 @@ install_composer () {
 install_snipeit () {
   create_user
   echo "* Creating MariaDB Database/User."
-  mysql -u root --execute="CREATE DATABASE snipeit;GRANT ALL PRIVILEGES ON snipeit.* TO snipeit@localhost IDENTIFIED BY '$mysqluserpw';"
+  mysql -u root --execute="CREATE DATABASE assetsecure;GRANT ALL PRIVILEGES ON assetsecure.* TO assetsecure@localhost IDENTIFIED BY '$mysqluserpw';"
 
-  echo -e "\n\n* Cloning Snipe-IT from github to the web directory."
-  log "git clone https://github.com/snipe/snipe-it $APP_PATH" & pid=$!
+  echo -e "\n\n* Cloning assetsecure from github to the web directory."
+  log "git clone https://github.com/Nexix-Security-Labs/assetsecure $APP_PATH" & pid=$!
   progress
 
   echo "* Configuring .env file."
   cp "$APP_PATH/.env.example" "$APP_PATH/.env"
 
   #TODO escape SED delimiter in variables
-  sed -i '1 i\#Created By Snipe-it Installer' "$APP_PATH/.env"
+  sed -i '1 i\#Created By assetsecure Installer' "$APP_PATH/.env"
   sed -i "s|^\\(APP_TIMEZONE=\\).*|\\1$tzone|" "$APP_PATH/.env"
   sed -i "s|^\\(DB_HOST=\\).*|\\1localhost|" "$APP_PATH/.env"
-  sed -i "s|^\\(DB_DATABASE=\\).*|\\1snipeit|" "$APP_PATH/.env"
-  sed -i "s|^\\(DB_USERNAME=\\).*|\\1snipeit|" "$APP_PATH/.env"
+  sed -i "s|^\\(DB_DATABASE=\\).*|\\1assetsecure|" "$APP_PATH/.env"
+  sed -i "s|^\\(DB_USERNAME=\\).*|\\1assetsecure|" "$APP_PATH/.env"
   sed -i "s|^\\(DB_PASSWORD=\\).*|\\1'$mysqluserpw'|" "$APP_PATH/.env"
   sed -i "s|^\\(APP_URL=\\).*|\\1http://$fqdn|" "$APP_PATH/.env"
 
@@ -305,7 +275,7 @@ set_hosts () {
 
 rename_default_vhost () {
     log "mv /etc/apache2/sites-enabled/000-default.conf /etc/apache2/sites-enabled/111-default.conf"
-    log "mv /etc/apache2/sites-enabled/snipeit.conf /etc/apache2/sites-enabled/000-snipeit.conf"
+    log "mv /etc/apache2/sites-enabled/assetsecure.conf /etc/apache2/sites-enabled/000-assetsecure.conf"
 }
 
 
@@ -339,7 +309,7 @@ echo '
 '
 
 echo ""
-echo "  Welcome to Snipe-IT Inventory Installer for CentOS, Rocky, Fedora, Debian, and Ubuntu!"
+echo "  Welcome to assetsecure Inventory Installer for CentOS, Rocky, Fedora, Debian, and Ubuntu!"
 echo ""
 echo "  Installation log located: $APP_LOG"
 echo ""
@@ -395,7 +365,7 @@ set_fqdn () {
 set_dbpass () {
    ans=default
    until [[ $ans == "yes" ]] || [[ $ans == "no" ]]; do
-      echo -n "  Q. Do you want to automatically create the SnipeIT database user password? (y/n) "
+      echo -n "  Q. Do you want to automatically create the assetsecure database user password? (y/n) "
       read -r setpw
 
       case $setpw in
@@ -405,7 +375,7 @@ set_dbpass () {
          ans="yes"
       ;;
       [nN] | [n|N][O|o] )
-         echo -n  "  Q. What do you want your snipeit user password to be?"
+         echo -n  "  Q. What do you want your assetsecure user password to be?"
          read -rs mysqluserpw
          echo ""
          ans="no"
@@ -912,12 +882,12 @@ esac
 done
 
 echo ""
-echo "  ***Open http://$fqdn to login to Snipe-IT.***"
+echo "  ***Open http://$fqdn to login to assetsecure.***"
 echo ""
 echo ""
 echo "* Cleaning up..."
-rm -f snipeit.sh
-rm -f install.sh
+#rm -f assetsecure.sh
+#rm -f install.sh
 echo "* Installation log located in $APP_LOG."
 echo "* Finished!"
 sleep 1
