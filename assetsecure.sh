@@ -123,6 +123,9 @@ echo "Installing PHP..."
 sudo apt install php php-mysql php-gd php-mbstring php-curl php-ldap php-xml php-bcmath git curl net-tools -y
 sudo apt install php php-bcmath php-bz2 php-intl php-gd php-mbstring php-mysql php-zip php-opcache php-pdo php-calendar php-ctype php-exif php-ffi php-fileinfo php-ftp php-iconv php-intl php-json php-mysqli php-phar php-posix php-readline php-shmop php-sockets php-sysvmsg php-sysvsem php-sysvshm php-tokenizer php-curl php-ldap -y
 
+# Update PHP version in composer.json
+sudo sed -i 's/"php": ">=7.4.3 <8.2"/"php": "^8.2"/' /var/www/assetsecure/composer.json
+
 # Install Composer dependency manager
 echo "Installing Composer..."
 curl -sS https://getcomposer.org/installer | php
