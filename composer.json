@@ -16,8 +16,8 @@
       "url": "https://github.com/grokability/laravel-scim-server"
     }
   ],
-  "require": {
-    "php": "^7.4",
+  "require": 
+    "php": "^8.2",
     "ext-curl": "*",
     "ext-fileinfo": "*",
     "ext-json": "*",
