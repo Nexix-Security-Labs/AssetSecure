@@ -1,6 +1,6 @@
 {
   "name": "snipe/snipe-it",
-  "description": "Open source asset management system built on Laravel.",
+  "description": "asset management software built on Laravel.",
   "keywords": [
     "assets",
     "asset-management",
