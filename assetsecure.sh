@@ -32,8 +32,8 @@
 #       - Customized AssetSecure .env configuration
 #       - Improved logging and output
 
-set_fqdn
-set_hosts
+# set_fqdn
+# set_hosts
 
 # Set key variables for reusability
 AS_USER="assetsecure"
