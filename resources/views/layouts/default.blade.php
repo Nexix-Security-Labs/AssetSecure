@@ -853,9 +853,9 @@
 
                 <div class="1hidden-xs pull-left">
                     <div class="pull-left" >
-                        <a target="_blank" href="https://snipeitapp.com" rel="noopener">Snipe-IT</a> is open source software,
+                        <a target="_blank" href="#" rel="noopener">AssetSecure</a> is asset management software,
                         made with <i class="fas fa-heart" style="color: #a94442; font-size: 10px" aria-hidden="true"></i><span
-                                class="sr-only">love</span> by <a href="https://twitter.com/snipeitapp" rel="noopener">@snipeitapp</a>.
+                                class="sr-only">love</span> by <a href="https://nexixsecuritylabs.com" rel="noopener">@nexixsecuritylabs</a>.
                     </div>
                     <div class="pull-right">
                     @if ($snipeSettings->version_footer!='off')
