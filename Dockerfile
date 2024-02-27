@@ -1,5 +1,5 @@
-FROM ubuntu:22.04
-LABEL maintainer="Brady Wetherington <bwetherington@grokability.com>"
+FROM ubuntu:latest
+LABEL maintainer="Nexix Security Labs"
 
 # No need to add `apt-get clean` here, reference:
 # - https://github.com/snipe/snipe-it/pull/9201
@@ -29,6 +29,9 @@ patch \
 curl \
 wget  \
 vim \
+nano \
+systemctl \
+sudo \
 git \
 cron \
 mysql-client \
@@ -70,7 +73,7 @@ RUN echo export APACHE_RUN_GROUP=staff >> /etc/apache2/envvars
 COPY docker/000-default.conf /etc/apache2/sites-enabled/000-default.conf
 
 #SSL
-RUN mkdir -p /var/lib/snipeit/ssl
+RUN mkdir -p /var/lib/assetsecure/ssl
 #COPY docker/001-default-ssl.conf /etc/apache2/sites-enabled/001-default-ssl.conf
 COPY docker/001-default-ssl.conf /etc/apache2/sites-available/001-default-ssl.conf
 
@@ -97,14 +100,14 @@ COPY docker/docker.env /var/www/html/.env
 RUN chown -R docker /var/www/html
 
 RUN \
-	rm -r "/var/www/html/storage/private_uploads" && ln -fs "/var/lib/snipeit/data/private_uploads" "/var/www/html/storage/private_uploads" \
-      && rm -rf "/var/www/html/public/uploads" && ln -fs "/var/lib/snipeit/data/uploads" "/var/www/html/public/uploads" \
-      && rm -r "/var/www/html/storage/app/backups" && ln -fs "/var/lib/snipeit/dumps" "/var/www/html/storage/app/backups" \
-      && mkdir -p "/var/lib/snipeit/keys" && ln -fs "/var/lib/snipeit/keys/oauth-private.key" "/var/www/html/storage/oauth-private.key" \
-      && ln -fs "/var/lib/snipeit/keys/oauth-public.key" "/var/www/html/storage/oauth-public.key" \
-      && ln -fs "/var/lib/snipeit/keys/ldap_client_tls.cert" "/var/www/html/storage/ldap_client_tls.cert" \
-      && ln -fs "/var/lib/snipeit/keys/ldap_client_tls.key" "/var/www/html/storage/ldap_client_tls.key" \
-      && chown docker "/var/lib/snipeit/keys/" \
+	rm -r "/var/www/html/storage/private_uploads" && ln -fs "/var/lib/assetsecure/data/private_uploads" "/var/www/html/storage/private_uploads" \
+      && rm -rf "/var/www/html/public/uploads" && ln -fs "/var/lib/assetsecure/data/uploads" "/var/www/html/public/uploads" \
+      && rm -r "/var/www/html/storage/app/backups" && ln -fs "/var/lib/assetsecure/dumps" "/var/www/html/storage/app/backups" \
+      && mkdir -p "/var/lib/assetsecure/keys" && ln -fs "/var/lib/assetsecure/keys/oauth-private.key" "/var/www/html/storage/oauth-private.key" \
+      && ln -fs "/var/lib/assetsecure/keys/oauth-public.key" "/var/www/html/storage/oauth-public.key" \
+      && ln -fs "/var/lib/assetsecure/keys/ldap_client_tls.cert" "/var/www/html/storage/ldap_client_tls.cert" \
+      && ln -fs "/var/lib/assetsecure/keys/ldap_client_tls.key" "/var/www/html/storage/ldap_client_tls.key" \
+      && chown docker "/var/lib/assetsecure/keys/" \
       && chown -h docker "/var/www/html/storage/" \
       && chmod +x /var/www/html/artisan \
       && echo "Finished setting up application in /var/www/html"
@@ -130,7 +133,7 @@ USER root
 
 ############### DATA VOLUME #################
 
-VOLUME ["/var/lib/snipeit"]
+VOLUME ["/var/lib/assetsecure"]
 
 ##### START SERVER
 
